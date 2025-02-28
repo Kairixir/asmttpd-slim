@@ -76,6 +76,8 @@
     http_200_len equ $ - http_200
     http_206 db "HTTP/1.1 206 Partial Content",0x0d,0x0a,0x00
     http_206_len equ $ - http_206
+    http_301 db "HTTP/1.1 301 Moved Permanently",0x0d,0x0a,0x00
+    http_301_len equ $ - http_301
     http_404 db "HTTP/1.1 404 Not Found",0x0d,0x0a,0x00
     http_404_len equ $ - http_404
     http_404_text db "I'm sorry, Dave. I'm afraid I can't do that. 404 Not Found",0x00
@@ -133,8 +135,21 @@
     content_type_gif db "image/gif",0x0d,0x0a,0x00
     content_type_gif_len equ $ - content_type_gif
 
+    content_type_svg db "image/svg+xml",0x0d,0x0a,0x00
+    content_type_svg_len equ $ - content_type_svg
+
+    about_slash db "/about/",0x00
+    about_slash_len equ $ - about_slash
+
+    about_no_slash db "about/",0x00
+    about_no_slash_len equ $ - about_no_slash
+
     default_document db "/index.html",0x00
     default_document_len equ $ - default_document
+
+    default_about_document db "/about/index.html",0x00
+    default_about_document_len equ $ - default_about_document
+
     
     ;Content extension
     extension_html     db ".html",0x00
