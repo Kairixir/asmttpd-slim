@@ -28,6 +28,9 @@
 section .data
     %include "data.asm"
     
+section .tdata
+    uri_storage resb 64 ;
+
 section .bss
     %include "bss.asm"
 
@@ -229,9 +232,41 @@ worker_thread_continue:
     jne worker_thread_append_directory_path
 
     dec r12 ; get rid of 0x00
+    
+    ; Preserve URI in thread-safe space
+    mov rdi, uri_storage   ; .bss: resb 256
+    mov rsi, [rbp-16]
+    add rsi, r8            ; URI start
+    mov rdx, r9
+    sub rdx, r8            ; URI length
+    call string_copy       ; Isolate URI copy
+    mov byte [rdi+rdx], 0  ; Null-terminate
 
+    ; Now use uri_storage for comparisons
+
+    mov rdi, uri_storage ; Check if /about/ in URI .,+5 lines
+    mov rsi, about_no_slash
+    call string_contains
+    cmp rax, 1
+    jne compare_to_root_uri ; set uri to /about/index.html if no
+     
+    handle_about_directory: ; set uri to /about/index.html
+    mov rsi, default_about_document
+    mov rdi, [rbp-16]
+    add rdi, r12
+    mov rcx, default_about_document_len
+    add r12, rcx
+    rep movsb
+    mov r9, r11 ; saving offset into a stack saved register
+    jmp worker_thread_remove_pre_dir
+
+
+    compare_to_root_uri:
     ;Check if default document needed
-    cmp r9, [request_offset] ; Offset of document requested
+    ; TODO: Something interesting happening here
+    ; The CMP incorrectly compares the offset of URI to original and matches only root 
+    
+    cmp r9, [request_offset] ; Offset of document requested 
     jne no_default_document
     mov rsi, default_document
     mov rdi, [rbp-16]
@@ -240,6 +275,7 @@ worker_thread_continue:
     add r12, rcx
     rep movsb
     mov r9, r11 ; saving offset into a stack saved register
+
     jmp worker_thread_remove_pre_dir
 
     no_default_document:

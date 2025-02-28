@@ -149,8 +149,18 @@
     content_type_svg db "image/svg+xml",0x0d,0x0a,0x00
     content_type_svg_len equ $ - content_type_svg
 
+    about_slash db "/about/",0x00
+    about_slash_len equ $ - about_slash
+
+    about_no_slash db "about/",0x00
+    about_no_slash_len equ $ - about_no_slash
+
     default_document db "/index.html",0x00
     default_document_len equ $ - default_document
+
+    default_about_document db "/about/index.html",0x00
+    default_about_document_len equ $ - default_about_document
+
     
     ;Content extension
     extension_html     db ".html",0x00
