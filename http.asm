@@ -379,8 +379,8 @@ create_http301_response: ;rdi - pointer to buffer
     call string_concat
 
     ; Remove directory path (web_root) from buffer
-    mov rsi, [rbp-16]
-    add rsi, r9
+    mov rsi, about_slash
+    ; add rsi, r9
     call string_concat
     mov rsi, [directory_path]
     call string_remove
