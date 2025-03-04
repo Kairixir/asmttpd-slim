@@ -385,8 +385,8 @@ create_http301_response: ;rdi - pointer to buffer
     mov rsi, [directory_path]
     call string_remove
 
-    mov rsi, char_slash
-    call string_concat
+    ;mov rsi, char_slash
+    ;call string_concat
 
     mov rsi, crlf
     call string_concat
